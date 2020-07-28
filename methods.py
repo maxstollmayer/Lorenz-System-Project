@@ -16,9 +16,7 @@ def LorenzSystem(sigma, rho, beta):
 
 
 def ParametricPlot(*args, labels=None, title=""):
-    
-    labels = ["" for n in range(len(args))] if labels is None else labels
-    
+        
     fig = plt.figure()
     ax = fig.gca(projection="3d")
 
@@ -31,15 +29,17 @@ def ParametricPlot(*args, labels=None, title=""):
     ax.set_title(f"{title}", pad=16)
 
     for i, states in enumerate(args):
-        ax.plot(*states.T, linewidth=0.5, alpha=0.95, label=f"{labels[i]}")
+        if labels is None:
+            ax.plot(*states.T, linewidth=0.5, alpha=0.95)
+        else:
+            ax.plot(*states.T, linewidth=0.5, alpha=0.95, label=f"{labels[i]}")
 
-    plt.legend()
+    if labels is not None:
+        plt.legend()
     plt.show()
 
     
-def Plot(t, *args, labels=None, title=""):
-    
-    labels = ["" for n in range(len(args))] if labels is None else labels
+def Plot(t, *args, labels=None, title="", sameAxis=True):
     
     fig = plt.figure()
     ax1 = fig.add_subplot(3, 1, 1, xticklabels=[])
@@ -51,13 +51,28 @@ def Plot(t, *args, labels=None, title=""):
     ax2.set_ylabel("y Axis")
     ax3.set_ylabel("z Axis")
     ax3.set_xlabel("time")
-
-    for i, states in enumerate(args):
-        ax1.plot(t, states.T[0], color=f"C{i}", linewidth=1, alpha=0.95, label=f"{labels[i]}")
-        ax2.plot(t, states.T[1], color=f"C{i}", linewidth=1, alpha=0.95)
-        ax3.plot(t, states.T[2], color=f"C{i}", linewidth=1, alpha=0.95)
-
-    ax1.legend(bbox_to_anchor=(0, 1, 1, 0), loc="lower left", ncol=len(args), mode="expand", borderaxespad=0)
+    
+    
+    if sameAxis:
+        for i, states in enumerate(args):
+            if labels is None:
+                ax1.plot(t, states.T[0], color=f"C{i}", linewidth=1, alpha=0.95)
+            else:
+                ax1.plot(t, states.T[0], color=f"C{i}", linewidth=1, alpha=0.95, label=f"{labels[i]}")
+            ax2.plot(t, states.T[1], color=f"C{i}", linewidth=1, alpha=0.95)
+            ax3.plot(t, states.T[2], color=f"C{i}", linewidth=1, alpha=0.95)
+    
+    else:
+        for i, states in enumerate(args):
+            if labels is None:
+                ax1.plot(t[i], states.T[0], color=f"C{i}", linewidth=1, alpha=0.95)
+            else:
+                ax1.plot(t[i], states.T[0], color=f"C{i}", linewidth=1, alpha=0.95, label=f"{labels[i]}")
+            ax2.plot(t[i], states.T[1], color=f"C{i}", linewidth=1, alpha=0.95)
+            ax3.plot(t[i], states.T[2], color=f"C{i}", linewidth=1, alpha=0.95)
+    
+    if labels is not None:
+        ax1.legend(bbox_to_anchor=(0, 1, 1, 0), loc="lower left", ncol=len(args), mode="expand", borderaxespad=0)
     plt.show()
 
 
