@@ -15,8 +15,8 @@ def LorenzSystem(sigma, rho, beta):
     return ODE
 
 
-def ParametricPlot(*args, labels=None, title=""):
-        
+def ParametricPlot(*args, labels=None, title="", fname=None):
+    
     fig = plt.figure()
     ax = fig.gca(projection="3d")
 
@@ -35,11 +35,15 @@ def ParametricPlot(*args, labels=None, title=""):
             ax.plot(*states.T, linewidth=0.5, alpha=0.95, label=f"{labels[i]}")
 
     if labels is not None:
-        plt.legend()
+        plt.legend(loc="upper left")
+    
+    if fname is not None:
+        fig.savefig(fname, bbox_inches="tight")
+
     plt.show()
 
     
-def Plot(t, *args, labels=None, title="", sameAxis=True):
+def Plot(t, *args, labels=None, title="", sameAxis=True, fname=None):
     
     fig = plt.figure()
     ax1 = fig.add_subplot(3, 1, 1, xticklabels=[])
@@ -73,6 +77,10 @@ def Plot(t, *args, labels=None, title="", sameAxis=True):
     
     if labels is not None:
         ax1.legend(bbox_to_anchor=(0, 1, 1, 0), loc="lower left", ncol=len(args), mode="expand", borderaxespad=0)
+    
+    if fname is not None:
+        fig.savefig(fname, bbox_inches="tight")
+
     plt.show()
 
 
