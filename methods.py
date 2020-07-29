@@ -84,7 +84,12 @@ def Plot(t, *args, labels=None, title="", sameAxis=True, fname=None):
     plt.show()
 
 
-def Animate(*args, title="", xlim=[-20, 20], ylim=[-25, 25], zlim=[0, 50]):
+def Animate(*args, hs=None, labels=None, title="", interval=4, xlim=[-20, 20], ylim=[-25, 25], zlim=[0, 50]):
+    
+    if hs is not None:
+        mults = np.max(hs) / np.array(hs)
+    else:
+        mults = (1,) * len(args)
     
     fig = plt.figure(figsize=(12.8, 7.2), tight_layout=True)
     ax = fig.gca(projection="3d")
@@ -116,14 +121,18 @@ def Animate(*args, title="", xlim=[-20, 20], ylim=[-25, 25], zlim=[0, 50]):
         return (*lines, *points)
 
     def update(i):
-        for states, line, point in zip(args, lines, points):
-            line.set_data(states.T[:2, :i])
-            line.set_3d_properties(states.T[2, :i])
-            point.set_data(states[i, :2])
-            point.set_3d_properties(states[i, 2])
+        for states, line, point, mult in zip(args, lines, points, mults):
+            line.set_data(states.T[:2, :int(mult * i)])
+            line.set_3d_properties(states.T[2, :int(mult * i)])
+            point.set_data(states[int(mult * i), :2])
+            point.set_3d_properties(states[int(mult * i), 2])
         return (*lines, *points)
 
-    FuncAnimation(fig, update, frames=len(args[0]), init_func=init, interval=4, blit=True).save("Lorenz-System Animation.mp4", bitrate=5000)
+    if labels is not None:
+        ax.legend(lines, labels)
+
+    anim = FuncAnimation(fig, update, frames=len(args[0]), init_func=init, interval=interval, blit=True)
+    anim.save("anim.mp4", bitrate=5000)
 
 
 def ABM(f, state0, t, steps=5, iters=1, tol=1e-8):
