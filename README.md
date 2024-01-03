@@ -1,2 +1,3 @@
 # Lorenz System
- A numerical analysis of the Lorenz system
+
+Projekt zum Lorenz-System im Rahmen der VU Numerische Methoden für Differentialgleichungen
